@@ -14,10 +14,11 @@ require substr(__DIR__, 0, strpos(__DIR__, 'Tests')+5) . '/../vendor/autoload.ph
  * @property numeric $numericProperty
  * @property null $null
  * @property string|null $stringNullProperty
- * @property DateTime $dateTime
+ * @property \DateTime $dateTime
  * @property $mixed
  * @property string[] $stringsProperty
  * @property DateTime[] $dateTimes
+ * @property date $myDate
  */
 class Object extends AbstractObject
 {
@@ -146,7 +147,7 @@ class AbstractObjectTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->object->dateTime = date('Y-m-d H:i:s');
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'DateTime\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'\\DateTime\', but actually is \'string\'.');
 		$this->object->dateTime = new DateTime();
 	}
 
@@ -207,6 +208,19 @@ class AbstractObjectTest extends TestCase
 		$this->object->dateTimes = $dates;
 		Assert::same($dates, $this->object->dateTimes);
 	}
+
+	/**
+	 * @testCase
+	 */
+	public function testMyDateType()
+	{
+		$date = date('Y-m-d H:i:s');
+		$this->object->myDate = $date;
+		Assert::same($date, $this->object->myDate);
+		Assert::error(function() {
+			$this->object->myDate = 'voodoo';
+		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'date\', but actually is \'string\'.');
+	}
 }
 
 class AbstractObjectExtendedTest extends AbstractObjectTest
@@ -224,6 +238,15 @@ class AbstractObjectExtendedTest extends AbstractObjectTest
 		$this->object->isExtended = true;
 		Assert::same(true, $this->object->isExtended);
 	}
+}
+
+/**
+ * @param string
+ * @return bool
+ */
+function is_date($date)
+{
+  return strtotime($date);
 }
 
 $abstractObjectTest = new AbstractObjectTest();
