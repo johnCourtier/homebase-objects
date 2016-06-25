@@ -1,0 +1,19 @@
+{
+	"name": "homebase/objects",
+	"description": "Thin smart object models layer",
+	"type": "library",
+	"authors": [
+		{
+			"name": "Jan Dvorak",
+			"email": "courtier.john@gmail.com"
+		}
+	],
+	"minimum-stability": "stable",
+	"require": {},
+	"require-dev": {
+		"nette/tester": "^1.7"
+	},
+	"autoload": {
+		"psr-4": {"Homebase\\": "Source/Homebase/"}
+	}
+}
