@@ -12,7 +12,7 @@ Package provides basic objects with magic property parsing out of annotation, ac
 
 ### Example of usage
 
-```
+```php
 /**
  * @property-read string $stringPropertyRead
  * @property-write string $stringPropertyWrite
@@ -34,7 +34,7 @@ class MyClass extends Homebase\Model\AbstractObject
 
 ### Custom type definition
 
-```
+```php
 /**
  * @param string
  * @return bool
