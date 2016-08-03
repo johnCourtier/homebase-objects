@@ -41,7 +41,7 @@ class MyClass extends Homebase\Model\AbstractObject
  */
 function is_date($date)
 {
-  return strtotime($date);
+  return (bool) strtotime($date);
 }
 
 /**
