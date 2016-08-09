@@ -1,5 +1,13 @@
 # Homebase
 
+## Instalation
+
+### Composer
+
+```bash
+composer require homebase/objects
+```
+
 ## Objects
 
 Package provides basic objects with magic property parsing out of annotation, access control, setter type comparison and simple getter.
