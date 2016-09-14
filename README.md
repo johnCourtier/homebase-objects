@@ -1,6 +1,6 @@
 # Homebase
 
-## Instalation
+## Installation
 
 ### Composer
 
