@@ -1,10 +1,18 @@
 <?php
 
+namespace Foo {
+	class Bar {}
+}
+
+namespace {
+
 use Homebase\Model\AbstractObject;
 use Tester\Assert;
 use Tester\TestCase;
+use Foo\Bar as FooBar;
 
 require substr(__DIR__, 0, strpos(__DIR__, 'Tests')+5) . '/../vendor/autoload.php';
+
 
 /**
  * @property-read string $stringPropertyRead
@@ -14,11 +22,12 @@ require substr(__DIR__, 0, strpos(__DIR__, 'Tests')+5) . '/../vendor/autoload.ph
  * @property numeric $numericProperty
  * @property null $null
  * @property string|null $stringNullProperty
- * @property \DateTime $dateTime
+ * @property DateTime $dateTime
  * @property $mixed
  * @property string[] $stringsProperty
  * @property DateTime[] $dateTimes
  * @property date $myDate
+ * @property Foo\Bar $fooBar
  */
 class Object extends AbstractObject
 {
@@ -101,31 +110,31 @@ class AbstractObjectTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->object->stringProperty = 666;
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'string\', but actually is \'integer\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'stringProperty\' property. Value is supposed to be \'string\', but actually is \'integer\'.');
 		Assert::error(function() {
 			$this->object->stringProperty = null;
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'string\', but actually is \'NULL\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'stringProperty\' property. Value is supposed to be \'string\', but actually is \'NULL\'.');
 		$this->object->stringProperty = 'voodoo';
 		Assert::same('voodoo', $this->object->stringProperty);
 
 		Assert::error(function() {
 			$this->object->intProperty = '666';
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'int\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'intProperty\' property. Value is supposed to be \'int\', but actually is \'string\'.');
 		Assert::error(function() {
 			$this->object->intProperty = null;
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'int\', but actually is \'NULL\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'intProperty\' property. Value is supposed to be \'int\', but actually is \'NULL\'.');
 		$this->object->intProperty = 666;
 
 		$this->object->numericProperty = 666;
 		$this->object->numericProperty = '666';
 		Assert::error(function() {
 			$this->object->numericProperty = null;
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'numeric\', but actually is \'NULL\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'numericProperty\' property. Value is supposed to be \'numeric\', but actually is \'NULL\'.');
 
 		$this->object->null = null;
 		Assert::error(function() {
 			$this->object->null = 'null';
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'null\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'null\' property. Value is supposed to be \'null\', but actually is \'string\'.');
 	}
 
 	/**
@@ -135,7 +144,7 @@ class AbstractObjectTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->object->stringNullProperty = 666;
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'string\' or \'null\', but actually is \'integer\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'stringNullProperty\' property. Value is supposed to be \'string\' or \'null\', but actually is \'integer\'.');
 		$this->object->stringNullProperty = '666';
 		$this->object->stringNullProperty = null;
 	}
@@ -147,8 +156,9 @@ class AbstractObjectTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->object->dateTime = date('Y-m-d H:i:s');
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'\\DateTime\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'dateTime\' property. Value is supposed to be \'DateTime\', but actually is \'string\'.');
 		$this->object->dateTime = new DateTime();
+		$this->object->fooBar = new FooBar();
 	}
 
 	/**
@@ -184,7 +194,7 @@ class AbstractObjectTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->object->stringsProperty = 'voodoo';
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'string[]\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'stringsProperty\' property. Value is supposed to be \'string[]\', but actually is \'string\'.');
 		$this->object->stringsProperty = array('voodoo', 'boo');
 		Assert::same(array('voodoo', 'boo'), $this->object->stringsProperty);
 		$this->object->stringsProperty = array('boo', 'voodoo');
@@ -193,7 +203,7 @@ class AbstractObjectTest extends TestCase
 		Assert::notSame(array('boo', 'voodoo'), $this->object->stringsProperty);
 		Assert::error(function() {
 			$this->object->stringsProperty = array('voodoo', 666);
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'string[]\', but actually is \'array\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'stringsProperty\' property. Value is supposed to be \'string[]\', but actually is \'array\'.');
 	}
 
 	/**
@@ -203,7 +213,7 @@ class AbstractObjectTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->object->dateTimes = 'voodoo';
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'DateTime[]\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'dateTimes\' property. Value is supposed to be \'DateTime[]\', but actually is \'string\'.');
 		$dates = array(new DateTime(1000), new DateTime(2000));
 		$this->object->dateTimes = $dates;
 		Assert::same($dates, $this->object->dateTimes);
@@ -219,7 +229,7 @@ class AbstractObjectTest extends TestCase
 		Assert::same($date, $this->object->myDate);
 		Assert::error(function() {
 			$this->object->myDate = 'voodoo';
-		}, 'E_USER_ERROR', 'Unable to set value. Value is supposed to be \'date\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value for \'myDate\' property. Value is supposed to be \'date\', but actually is \'string\'.');
 	}
 }
 
@@ -254,3 +264,4 @@ $abstractObjectTest->run();
 
 $abstractObjectExtendedTest = new AbstractObjectExtendedTest();
 $abstractObjectExtendedTest->run();
+}

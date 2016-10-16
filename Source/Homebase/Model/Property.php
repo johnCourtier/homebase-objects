@@ -165,7 +165,7 @@ class Property implements IProperty
 			}
 		}
 
-		throw new InvalidArgumentException('Unable to set value. Value is supposed to be \''.implode('\' or \'', $types).'\', but actually is \''.$this->getValueType($value).'\'.');
+		throw new InvalidArgumentException('Unable to set value for \''.$this->getName().'\' property. Value is supposed to be \''.implode('\' or \'', $types).'\', but actually is \''.$this->getValueType($value).'\'.');
 	}
 
 	public function unsetValue()
@@ -191,8 +191,7 @@ class Property implements IProperty
 	 */
 	protected function isTypeAndValueObject($type, $value)
 	{
-		$objectType = $this->isTypeObject($type);
-		return ($objectType && is_a($value, $objectType));
+		return ($value instanceOf $type);
 	}
 
 	/**
@@ -259,39 +258,11 @@ class Property implements IProperty
 
 	/**
 	 * @param string $type
-	 * @return string|false fullClassName|fullInterfaceName
-	 */
-	protected function isTypeObject($type) {
-		if (class_exists($type)) {
-			return $type;
-		}
-
-		$availableClasses = get_declared_classes();
-		foreach ($availableClasses as $availableClass) {
-			$className = substr($availableClass, strrpos($availableClass, '\\')+1);
-			if ($className === $type) {
-				return $availableClass;
-			}
-		}
-
-		$availableInterfaces = get_declared_interfaces();
-		foreach ($availableInterfaces as $availableInterface) {
-			$interfaceName = substr($availableInterface, strrpos($availableInterface, '\\')+1);
-			if ($interfaceName === $type) {
-				return $availableInterface;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param string $type
 	 * @return string|false fullClassName
 	 */
 	protected function isTypeObjectArray($type) {
 		if (strpos($type, '[]') === strlen($type)-2) {
-			return $this->isTypeObject(substr($type, 0, -2));
+			return substr($type, 0, -2);
 		}
 
 		return false;
@@ -319,7 +290,7 @@ class Property implements IProperty
 	{
 		$funtionName = 'is_'.$type;
 		if (!function_exists($funtionName)) {
-			throw new InvalidArgumentException('Unable to check scalar type of value. No function \''.$funtionName.'\' exist for that purpose.');
+			throw new InvalidArgumentException('Unable to check scalar type of value for \''.$this->getName().'\' property. No function \''.$funtionName.'\' exist for that purpose.');
 		}
 
 		return call_user_func_array($funtionName, array($value));
