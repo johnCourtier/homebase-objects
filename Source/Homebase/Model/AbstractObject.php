@@ -185,7 +185,6 @@ abstract class AbstractObject
 	/**
 	 * @param string $name
 	 * @param mixed $value
-	 * @return AbstractObject
 	 */
 	public function __set($name, $value)
 	{
@@ -203,13 +202,12 @@ abstract class AbstractObject
 		$methodName = 'set'.ucfirst($name);
 		if (is_callable(array($this, $methodName))) {
 			return call_user_func_array(array($this, $methodName), array($value));
-		} else {
-			try {
-				$this->setPropertyValue($name, $value);
-			} catch (InvalidArgumentException $exception) {
-				trigger_error($exception->getMessage(), E_USER_ERROR);
-			}
-			return $this;
+		}
+
+		try {
+			$this->setPropertyValue($name, $value);
+		} catch (InvalidArgumentException $exception) {
+			trigger_error($exception->getMessage(), E_USER_ERROR);
 		}
 	}
 
@@ -233,12 +231,14 @@ abstract class AbstractObject
 		$methodName = 'get'.ucfirst($name);
 		if (is_callable(array($this, $methodName))) {
 			return call_user_func_array(array($this, $methodName));
-		} elseif ($property->isValueSet()) {
-			return $property->getValue();
-		} else {
-			trigger_error('Unable to get property \''.$name.'\'. Property of \''.get_class($this).'\' was not yet set.', E_USER_ERROR);
-			return NULL;
 		}
+
+		if ($property->isValueSet()) {
+			return $property->getValue();
+		}
+
+		trigger_error('Unable to get property \''.$name.'\'. Property of \''.get_class($this).'\' was not yet set.', E_USER_ERROR);
+		return NULL;
 	}
 
 	/**

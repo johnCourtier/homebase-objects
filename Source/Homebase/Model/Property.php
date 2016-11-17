@@ -10,8 +10,8 @@ class Property implements IProperty
 	const ACCESS_READ = 0b01;
 	const ACCESS_WRITE = 0b10;
 
-	/** @var string|null */
-	protected $type;
+	/** @var string[]|null */
+	protected $types;
 
 	/** @var string */
 	protected $name;
@@ -31,7 +31,7 @@ class Property implements IProperty
 	/**
 	 * @param string $name
 	 * @param string $access
-	 * @param string $type
+	 * @param string|string[] $type
 	 * @param string $description
 	 */
 	protected function __construct(
@@ -41,11 +41,7 @@ class Property implements IProperty
 		$description = null
 	) {
 		$this->setAccess($access);
-		if ($type !== null) {
-			$this->setTypes(explode('|', $type));
-		} else {
-			$this->setTypes($type);
-		}
+		$this->setTypes($type);
 		$this->setName($name);
 		$this->setDescription($description);
 	}
@@ -99,11 +95,15 @@ class Property implements IProperty
 	}
 
 	/**
-	 * @param string[]|null $types
+	 * @param string|string[]|null $types
 	 */
 	public function setTypes($types)
 	{
-		$this->types = $types;
+		if (is_string($types)) {
+			$this->types = explode('|', $types);
+		} else {
+			$this->types = $types;
+		}
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Property implements IProperty
 	}
 
 	/**
-	 * @param string $description
+	 * @param string|null $description
 	 */
 	public function setDescription($description)
 	{
@@ -134,9 +134,9 @@ class Property implements IProperty
 	{
 		if (is_object($value)) {
 			return get_class($value);
-		} else {
-			return gettype($value);
 		}
+
+		return gettype($value);
 	}
 
 	/**
@@ -201,20 +201,22 @@ class Property implements IProperty
 	 */
 	protected function isTypeAndValueObjectArray($type, $value)
 	{
+		if (!is_array($value) && !($value instanceof Traversable)) {
+			return FALSE;
+		}
+
 		$objectType = $this->isTypeObjectArray($type);
-		if ($objectType) {
-			if (!is_array($value) && !($value instanceof Traversable)) {
+		if ($objectType === FALSE) {
+			return FALSE;
+		}
+
+		foreach ($value as $item) {
+			if (!$this->isTypeAndValueObject($objectType, $item)) {
 				return FALSE;
 			}
-
-			foreach ($value as $item) {
-				if (!$this->isTypeAndValueObject($objectType, $item)) {
-					return FALSE;
-				}
-			}
-
-			return TRUE;
 		}
+
+		return TRUE;
 	}
 
 	/**
@@ -224,22 +226,22 @@ class Property implements IProperty
 	 */
 	protected function isTypeAndValueScalarArray($type, $value)
 	{
-		$scalarType = $this->isTypeScalarArray($type);
-		if ($scalarType) {
-			if (!is_array($value) && !($value instanceof Traversable)) {
-				return FALSE;
-			}
-
-			foreach ($value as $item) {
-				if (!$this->isTypeAndValueScalar($scalarType, $item)) {
-					return FALSE;
-				}
-			}
-
-			return TRUE;
+		if (!is_array($value) && !($value instanceof Traversable)) {
+			return FALSE;
 		}
 
-		return FALSE;
+		$scalarType = $this->isTypeScalarArray($type);
+		if ($scalarType === FALSE) {
+			return FALSE;
+		}
+
+		foreach ($value as $item) {
+			if (!$this->isTypeAndValueScalar($scalarType, $item)) {
+				return FALSE;
+			}
+		}
+
+		return TRUE;
 	}
 
 	/**
@@ -253,7 +255,7 @@ class Property implements IProperty
 			return $type;
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -265,32 +267,32 @@ class Property implements IProperty
 			return substr($type, 0, -2);
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	/**
 	 * @param string $type
-	 * @return string|boolean
+	 * @return string|false
 	 */
 	protected function isTypeScalarArray($type) {
 		if (strpos($type, '[]') === strlen($type)-2) {
 			return $this->isTypeScalar(substr($type, 0, -2));
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	/**
 	 * @param string $type
 	 * @param mixed $value
 	 * @return bool
-	 * @throws InvalidArgumentException if no function exists for checking
 	 */
 	protected function isValueScalarType($type, $value)
 	{
 		$funtionName = 'is_'.$type;
 		if (!function_exists($funtionName)) {
-			throw new InvalidArgumentException('Unable to check scalar type of value for \''.$this->getName().'\' property. No function \''.$funtionName.'\' exist for that purpose.');
+			trigger_error('Unable to check scalar type of value for \''.$this->getName().'\' property. No function \''.$funtionName.'\' exist for that purpose.', E_USER_ERROR);
+			return FALSE;
 		}
 
 		return call_user_func_array($funtionName, array($value));
@@ -302,11 +304,11 @@ class Property implements IProperty
 	protected function setAccess($access = null)
 	{
 		if ($access === 'read') {
-			$this->access = self::ACCESS_READ;
+			$this->access = static::ACCESS_READ;
 		} elseif ($access === 'write') {
-			$this->access = self::ACCESS_WRITE;
+			$this->access = static::ACCESS_WRITE;
 		} else {
-			$this->access = self::ACCESS_READ | self::ACCESS_WRITE;
+			$this->access = static::ACCESS_READ | static::ACCESS_WRITE;
 		}
 	}
 
@@ -315,7 +317,7 @@ class Property implements IProperty
 	 */
 	public function isWriteable()
 	{
-		return $this->access & self::ACCESS_WRITE;
+		return $this->access & static::ACCESS_WRITE;
 	}
 
 	/**
@@ -323,7 +325,7 @@ class Property implements IProperty
 	 */
 	public function isReadable()
 	{
-		return $this->access & self::ACCESS_READ;
+		return $this->access & static::ACCESS_READ;
 	}
 
 	/**
