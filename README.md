@@ -34,7 +34,7 @@ Package provides basic objects with magic property parsing out of annotation, ac
  * @property string[] $stringsProperty
  * @property DateTime[] $dateTimes
  */
-class MyClass extends Homebase\Model\AbstractObject
+class MyClass extends Homebase\Model\PropertyContainer
 {
 
 }
@@ -55,7 +55,7 @@ function is_date($date)
 /**
  * @property date $myDate
  */
-class MyClass extends Homebase\Model\AbstractObject
+class MyClass extends Homebase\Model\PropertyContainer
 {
 }
 ```
