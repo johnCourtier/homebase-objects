@@ -2,7 +2,7 @@
 
 namespace Homebase\Model;
 
-abstract class AbstractValueObject extends AbstractObject
+abstract class ValueObject extends PropertyContainer
 {
 	/**
 	 * @param string $name

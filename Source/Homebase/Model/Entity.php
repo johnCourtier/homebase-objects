@@ -2,7 +2,7 @@
 
 namespace Homebase\Model;
 
-abstract class AbstractEntity extends AbstractObject implements IEntity
+abstract class Entity extends PropertyContainer implements Mutable
 {
 	/** @var array array(string<name> => mixed<value>) */
 	protected $originalValues;
@@ -11,7 +11,7 @@ abstract class AbstractEntity extends AbstractObject implements IEntity
 	 * @param string $propertyName
 	 * @return bool
 	 */
-	public function isChanged($propertyName)
+	public function isPropertyChanged($propertyName)
 	{
 		return (isset($this->$propertyName)
 			&& isset($this->originalValues[$propertyName])

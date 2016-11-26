@@ -2,11 +2,11 @@
 
 namespace Homebase\Model;
 
-interface IEntity
+interface Mutable
 {
 	/**
 	 * @param string $propertyName
 	 * @return bool
 	 */
-	public function isChanged($propertyName);
+	public function isPropertyChanged($propertyName);
 }

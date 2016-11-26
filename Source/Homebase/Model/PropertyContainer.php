@@ -12,7 +12,7 @@ use ReflectionClass;
  * - property value type is checked when set
  * - property access is checked by magic setter and getter
  */
-abstract class AbstractObject
+abstract class PropertyContainer
 {
 	/** @var IProperty[]|null */
 	private $properties = null;
@@ -96,7 +96,7 @@ abstract class AbstractObject
 	/**
 	 * @param IProperty $property
 	 */
-	private function addProperty(IProperty $property)
+	private function addProperty(Property $property)
 	{
 		if ($this->propertyExists($property->getName())) {
 			$parentClassName = get_parent_class(get_class($this));
@@ -118,7 +118,7 @@ abstract class AbstractObject
 			throw new LogicException('Unable to create Property. Property name was not parsed.');
 		}
 
-		return Property::createProperty(
+		return StronglyTypedProperty::createProperty(
 			$propertyQualities['name'],
 			isset($propertyQualities['access']) ? $propertyQualities['access'] :null,
 			isset($propertyQualities['type']) ? $propertyQualities['type'] :null,

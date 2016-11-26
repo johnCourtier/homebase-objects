@@ -1,6 +1,6 @@
 <?php
 
-use Homebase\Model\AbstractEntity;
+use Homebase\Model\Entity;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -9,11 +9,11 @@ require substr(__DIR__, 0, strpos(__DIR__, 'Tests')+5) . '/../vendor/autoload.ph
 /**
  * @property string $property
  */
-class Entity extends AbstractEntity
+class NewEntity extends Entity
 {
 }
 
-class AbstractEntityTest extends TestCase
+class EntityTest extends TestCase
 {
 	/** @var Entity */
 	protected $entity;
@@ -21,7 +21,7 @@ class AbstractEntityTest extends TestCase
 	public function setUp()
 	{
 		Assert::noError(function() {
-			$this->entity = new Entity();
+			$this->entity = new NewEntity();
 		});
 	}
 
@@ -31,17 +31,17 @@ class AbstractEntityTest extends TestCase
 	public function testEntityPropertyIsChanged()
 	{
 		Assert::error(function() {
-			return $this->entity->isChanged('nonProperty');
+			return $this->entity->isPropertyChanged('nonProperty');
 		}, 'E_USER_WARNING', 'Class \''.get_class($this->entity).'\' has no \'nonProperty\' property defined.');
-		Assert::same(false, $this->entity->isChanged('property'));
+		Assert::same(false, $this->entity->isPropertyChanged('property'));
 		$this->entity->property = '666';
-		Assert::same(false, $this->entity->isChanged('property'));
+		Assert::same(false, $this->entity->isPropertyChanged('property'));
 		$this->entity->property = 'voodoo';
-		Assert::same(true, $this->entity->isChanged('property'));
+		Assert::same(true, $this->entity->isPropertyChanged('property'));
 		$this->entity->property = '666';
-		Assert::same(false, $this->entity->isChanged('property'));
+		Assert::same(false, $this->entity->isPropertyChanged('property'));
 	}
 }
 
-$abstractEntityTest = new AbstractEntityTest();
-$abstractEntityTest->run();
+$entityTest = new EntityTest();
+$entityTest->run();

@@ -2,337 +2,70 @@
 
 namespace Homebase\Model;
 
-use InvalidArgumentException;
-use Traversable;
-
-class Property implements IProperty
+interface Property
 {
-	const ACCESS_READ = 0b01;
-	const ACCESS_WRITE = 0b10;
-
-	/** @var string[]|null */
-	protected $types;
-
-	/** @var string */
-	protected $name;
-
-	/** @var string|null */
-	protected $description;
-
-	/** @var mixed|null */
-	protected $value;
-
-	/** @var int */
-	protected $access;
-
-	/** @var bool */
-	protected $isValueSet = FALSE;
-
 	/**
-	 * @param string $name
-	 * @param string $access
-	 * @param string|string[] $type
-	 * @param string $description
+	 * @return string[]|null valid types for value
 	 */
-	protected function __construct(
-		$name,
-		$access = null,
-		$type = null,
-		$description = null
-	) {
-		$this->setAccess($access);
-		$this->setTypes($type);
-		$this->setName($name);
-		$this->setDescription($description);
-	}
-
-	/**
-	 * @param string $name
-	 * @param string|null $access
-	 * @param string|null $type
-	 * @param string|null $description
-	 * @return Property
-	 */
-	public static function createProperty(
-		$name,
-		$access = null,
-		$type = null,
-		$description = null
-	) {
-		return new Property($name, $access, $type, $description);
-	}
-
-	/**
-	 * @return string[]|null
-	 */
-	public function getTypes()
-	{
-		return $this->types;
-	}
+	public function getTypes();
 
 	/**
 	 * @return string|null
 	 */
-	public function getName()
-	{
-		return $this->name;
-	}
+	public function getName();
 
 	/**
 	 * @return string|null
 	 */
-	public function getDescription()
-	{
-		return $this->description;
-	}
+	public function getDescription();
 
 	/**
 	 * @return mixed|null
 	 */
-	public function getValue()
-	{
-		return $this->value;
-	}
+	public function getValue();
 
 	/**
-	 * @param string|string[]|null $types
+	 * @param string[]|null $types valid types for value
 	 */
-	public function setTypes($types)
-	{
-		if (is_string($types)) {
-			$this->types = explode('|', $types);
-		} else {
-			$this->types = $types;
-		}
-	}
+	public function setTypes($types);
 
 	/**
 	 * @param string $name
 	 * @throws InvalidArgumentException if $name is empty
 	 */
-	public function setName($name)
-	{
-		if (empty($name)) {
-			throw new InvalidArgumentException('Unable to set empty name.');
-		}
-		$this->name = $name;
-	}
+	public function setName($name);
 
 	/**
-	 * @param string|null $description
+	 * @param string $description
 	 */
-	public function setDescription($description)
-	{
-		$this->description = $description;
-	}
+	public function setDescription($description);
 
 	/**
 	 * @param mixed $value
-	 * @return string
+	 * @return string actual type of $value
 	 */
-	public function getValueType($value)
-	{
-		if (is_object($value)) {
-			return get_class($value);
-		}
-
-		return gettype($value);
-	}
+	public function getValueType($value);
 
 	/**
 	 * @param mixed|null $value
 	 * @throws InvalidArgumentException if value can not be set
 	 */
-	public function setValue($value)
-	{
-		$types = $this->getTypes();
+	public function setValue($value);
 
-		if ($types === null) {
-			$this->value = $value;
-			$this->isValueSet = true;
-			return;
-		}
-
-		foreach ($types as $type) {
-			if ($this->isTypeAndValueScalar($type, $value)
-				|| $this->isTypeAndValueScalarArray($type, $value)
-				|| $this->isTypeAndValueObject($type, $value)
-				|| $this->isTypeAndValueObjectArray($type, $value)
-			) {
-				$this->value = $value;
-				$this->isValueSet = true;
-				return;
-			}
-		}
-
-		throw new InvalidArgumentException('Unable to set value for \''.$this->getName().'\' property. Value is supposed to be \''.implode('\' or \'', $types).'\', but actually is \''.$this->getValueType($value).'\'.');
-	}
-
-	public function unsetValue()
-	{
-		$this->value = null;
-		$this->isValueSet = false;
-	}
-
-	/**
-	 * @param string $type
-	 * @param mixed $value
-	 * @return bool
-	 */
-	protected function isTypeAndValueScalar($type, $value)
-	{
-		return ($this->isTypeScalar($type) && $this->isValueScalarType($type, $value));
-	}
-
-	/**
-	 * @param string $type
-	 * @param mixed $value
-	 * @return bool
-	 */
-	protected function isTypeAndValueObject($type, $value)
-	{
-		return ($value instanceOf $type);
-	}
-
-	/**
-	 * @param string $type
-	 * @param mixed $value
-	 * @return bool
-	 */
-	protected function isTypeAndValueObjectArray($type, $value)
-	{
-		if (!is_array($value) && !($value instanceof Traversable)) {
-			return FALSE;
-		}
-
-		$objectType = $this->isTypeObjectArray($type);
-		if ($objectType === FALSE) {
-			return FALSE;
-		}
-
-		foreach ($value as $item) {
-			if (!$this->isTypeAndValueObject($objectType, $item)) {
-				return FALSE;
-			}
-		}
-
-		return TRUE;
-	}
-
-	/**
-	 * @param type $type
-	 * @param Traversable $value
-	 * @return bool
-	 */
-	protected function isTypeAndValueScalarArray($type, $value)
-	{
-		if (!is_array($value) && !($value instanceof Traversable)) {
-			return FALSE;
-		}
-
-		$scalarType = $this->isTypeScalarArray($type);
-		if ($scalarType === FALSE) {
-			return FALSE;
-		}
-
-		foreach ($value as $item) {
-			if (!$this->isTypeAndValueScalar($scalarType, $item)) {
-				return FALSE;
-			}
-		}
-
-		return TRUE;
-	}
-
-	/**
-	 * @param string $type
-	 * @return string|false scalarType
-	 */
-	protected function isTypeScalar($type)
-	{
-		$funtionName = 'is_'.$type;
-		if (function_exists($funtionName)) {
-			return $type;
-		}
-
-		return FALSE;
-	}
-
-	/**
-	 * @param string $type
-	 * @return string|false fullClassName
-	 */
-	protected function isTypeObjectArray($type) {
-		if (strpos($type, '[]') === strlen($type)-2) {
-			return substr($type, 0, -2);
-		}
-
-		return FALSE;
-	}
-
-	/**
-	 * @param string $type
-	 * @return string|false
-	 */
-	protected function isTypeScalarArray($type) {
-		if (strpos($type, '[]') === strlen($type)-2) {
-			return $this->isTypeScalar(substr($type, 0, -2));
-		}
-
-		return FALSE;
-	}
-
-	/**
-	 * @param string $type
-	 * @param mixed $value
-	 * @return bool
-	 */
-	protected function isValueScalarType($type, $value)
-	{
-		$funtionName = 'is_'.$type;
-		if (!function_exists($funtionName)) {
-			trigger_error('Unable to check scalar type of value for \''.$this->getName().'\' property. No function \''.$funtionName.'\' exist for that purpose.', E_USER_ERROR);
-			return FALSE;
-		}
-
-		return call_user_func_array($funtionName, array($value));
-	}
-
-	/**
-	 * @param string|null $access
-	 */
-	protected function setAccess($access = null)
-	{
-		if ($access === 'read') {
-			$this->access = static::ACCESS_READ;
-		} elseif ($access === 'write') {
-			$this->access = static::ACCESS_WRITE;
-		} else {
-			$this->access = static::ACCESS_READ | static::ACCESS_WRITE;
-		}
-	}
+	public function unsetValue();
 
 	/**
 	 * @return bool
 	 */
-	public function isWriteable()
-	{
-		return $this->access & static::ACCESS_WRITE;
-	}
+	public function isWriteable();
 
 	/**
 	 * @return bool
 	 */
-	public function isReadable()
-	{
-		return $this->access & static::ACCESS_READ;
-	}
+	public function isReadable();
 
 	/**
 	 * @return bool
 	 */
-	public function isValueSet()
-	{
-		return $this->isValueSet;
-	}
+	public function isValueSet();
 }
