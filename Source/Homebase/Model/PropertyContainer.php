@@ -14,7 +14,7 @@ use ReflectionClass;
  */
 abstract class PropertyContainer
 {
-	/** @var IProperty[]|null */
+	/** @var Property[]|null */
 	private $properties = null;
 
 	/**
@@ -94,7 +94,7 @@ abstract class PropertyContainer
 	}
 
 	/**
-	 * @param IProperty $property
+	 * @param Property $property
 	 */
 	private function addProperty(Property $property)
 	{
@@ -109,7 +109,7 @@ abstract class PropertyContainer
 
 	/**
 	 * @param array $propertyQualities array(string<qualityName> => string<qualityValue>) matches of annotation parsing
-	 * @return IProperty
+	 * @return Property
 	 * @throws LogicException if name key is missing
 	 */
 	protected function createProperty(array $propertyQualities)
@@ -163,7 +163,7 @@ abstract class PropertyContainer
 		return $this->properties[$name]->getValue();
 	}
 
-	/** @var IProperty[]|null */
+	/** @var Property[]|null */
 	protected function getProperties()
 	{
 		return $this->properties;
