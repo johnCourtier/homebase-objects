@@ -110,31 +110,31 @@ class PropertyContainerTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->propertyContainer->stringProperty = 666;
-		}, 'E_USER_ERROR', 'Unable to set value for \'stringProperty\' property. Value is supposed to be \'string\', but actually is \'integer\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'stringProperty\' property. Value is supposed to be \'string\', but actually is \'integer\'.');
 		Assert::error(function() {
 			$this->propertyContainer->stringProperty = null;
-		}, 'E_USER_ERROR', 'Unable to set value for \'stringProperty\' property. Value is supposed to be \'string\', but actually is \'NULL\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'stringProperty\' property. Value is supposed to be \'string\', but actually is \'NULL\'.');
 		$this->propertyContainer->stringProperty = 'voodoo';
 		Assert::same('voodoo', $this->propertyContainer->stringProperty);
 
 		Assert::error(function() {
 			$this->propertyContainer->intProperty = '666';
-		}, 'E_USER_ERROR', 'Unable to set value for \'intProperty\' property. Value is supposed to be \'int\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'intProperty\' property. Value is supposed to be \'int\', but actually is \'string\'.');
 		Assert::error(function() {
 			$this->propertyContainer->intProperty = null;
-		}, 'E_USER_ERROR', 'Unable to set value for \'intProperty\' property. Value is supposed to be \'int\', but actually is \'NULL\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'intProperty\' property. Value is supposed to be \'int\', but actually is \'NULL\'.');
 		$this->propertyContainer->intProperty = 666;
 
 		$this->propertyContainer->numericProperty = 666;
 		$this->propertyContainer->numericProperty = '666';
 		Assert::error(function() {
 			$this->propertyContainer->numericProperty = null;
-		}, 'E_USER_ERROR', 'Unable to set value for \'numericProperty\' property. Value is supposed to be \'numeric\', but actually is \'NULL\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'numericProperty\' property. Value is supposed to be \'numeric\', but actually is \'NULL\'.');
 
 		$this->propertyContainer->null = null;
 		Assert::error(function() {
 			$this->propertyContainer->null = 'null';
-		}, 'E_USER_ERROR', 'Unable to set value for \'null\' property. Value is supposed to be \'null\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'null\' property. Value is supposed to be \'null\', but actually is \'string\'.');
 	}
 
 	/**
@@ -144,7 +144,7 @@ class PropertyContainerTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->propertyContainer->stringNullProperty = 666;
-		}, 'E_USER_ERROR', 'Unable to set value for \'stringNullProperty\' property. Value is supposed to be \'string\' or \'null\', but actually is \'integer\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'stringNullProperty\' property. Value is supposed to be \'string\' or \'null\', but actually is \'integer\'.');
 		$this->propertyContainer->stringNullProperty = '666';
 		$this->propertyContainer->stringNullProperty = null;
 	}
@@ -156,7 +156,7 @@ class PropertyContainerTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->propertyContainer->dateTime = date('Y-m-d H:i:s');
-		}, 'E_USER_ERROR', 'Unable to set value for \'dateTime\' property. Value is supposed to be \'DateTime\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'dateTime\' property. Value is supposed to be \'DateTime\', but actually is \'string\'.');
 		$this->propertyContainer->dateTime = new DateTime();
 		$this->propertyContainer->fooBar = new FooBar();
 	}
@@ -194,7 +194,7 @@ class PropertyContainerTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->propertyContainer->stringsProperty = 'voodoo';
-		}, 'E_USER_ERROR', 'Unable to set value for \'stringsProperty\' property. Value is supposed to be \'string[]\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'stringsProperty\' property. Value is supposed to be \'string[]\', but actually is \'string\'.');
 		$this->propertyContainer->stringsProperty = array('voodoo', 'boo');
 		Assert::same(array('voodoo', 'boo'), $this->propertyContainer->stringsProperty);
 		$this->propertyContainer->stringsProperty = array('boo', 'voodoo');
@@ -203,7 +203,7 @@ class PropertyContainerTest extends TestCase
 		Assert::notSame(array('boo', 'voodoo'), $this->propertyContainer->stringsProperty);
 		Assert::error(function() {
 			$this->propertyContainer->stringsProperty = array('voodoo', 666);
-		}, 'E_USER_ERROR', 'Unable to set value for \'stringsProperty\' property. Value is supposed to be \'string[]\', but actually is \'array\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'stringsProperty\' property. Value is supposed to be \'string[]\', but actually is \'array\'.');
 	}
 
 	/**
@@ -213,7 +213,7 @@ class PropertyContainerTest extends TestCase
 	{
 		Assert::error(function() {
 			$this->propertyContainer->dateTimes = 'voodoo';
-		}, 'E_USER_ERROR', 'Unable to set value for \'dateTimes\' property. Value is supposed to be \'DateTime[]\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'dateTimes\' property. Value is supposed to be \'DateTime[]\', but actually is \'string\'.');
 		$dates = array(new DateTime(1000), new DateTime(2000));
 		$this->propertyContainer->dateTimes = $dates;
 		Assert::same($dates, $this->propertyContainer->dateTimes);
@@ -229,7 +229,7 @@ class PropertyContainerTest extends TestCase
 		Assert::same($date, $this->propertyContainer->myDate);
 		Assert::error(function() {
 			$this->propertyContainer->myDate = 'voodoo';
-		}, 'E_USER_ERROR', 'Unable to set value for \'myDate\' property. Value is supposed to be \'date\', but actually is \'string\'.');
+		}, 'E_USER_ERROR', 'Unable to set value of \'myDate\' property. Value is supposed to be \'date\', but actually is \'string\'.');
 	}
 }
 

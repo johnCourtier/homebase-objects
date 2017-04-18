@@ -31,7 +31,6 @@ interface Property
 
 	/**
 	 * @param string $name
-	 * @throws InvalidArgumentException if $name is empty
 	 */
 	public function setName($name);
 
@@ -48,7 +47,7 @@ interface Property
 
 	/**
 	 * @param mixed|null $value
-	 * @throws InvalidArgumentException if value can not be set
+	 * @throws Homebase\Model\Property\InvalidValueException if value can not be set
 	 */
 	public function setValue($value);
 

@@ -2,7 +2,7 @@
 
 namespace Homebase\Model;
 
-use InvalidArgumentException;
+use Homebase\Model\Property\InvalidValueException;
 use Traversable;
 
 class StronglyTypedProperty implements Property
@@ -51,7 +51,7 @@ class StronglyTypedProperty implements Property
 	 * @param string|null $access
 	 * @param string|null $type
 	 * @param string|null $description
-	 * @return StronglyTypedProperty
+	 * @return static
 	 */
 	public static function createProperty(
 		$name,
@@ -59,7 +59,7 @@ class StronglyTypedProperty implements Property
 		$type = null,
 		$description = null
 	) {
-		return new StronglyTypedProperty($name, $access, $type, $description);
+		return new static($name, $access, $type, $description);
 	}
 
 	/**
@@ -108,12 +108,11 @@ class StronglyTypedProperty implements Property
 
 	/**
 	 * @param string $name
-	 * @throws InvalidArgumentException if $name is empty
 	 */
 	public function setName($name)
 	{
 		if (empty($name)) {
-			throw new InvalidArgumentException('Unable to set empty name.');
+			trigger_error('Unable to set empty property name.', E_USER_ERROR);
 		}
 		$this->name = $name;
 	}
@@ -141,7 +140,7 @@ class StronglyTypedProperty implements Property
 
 	/**
 	 * @param mixed|null $value
-	 * @throws InvalidArgumentException if value can not be set
+	 * @throws Homebase\Model\Property\InvalidValueException if value can not be set
 	 */
 	public function setValue($value)
 	{
@@ -165,7 +164,7 @@ class StronglyTypedProperty implements Property
 			}
 		}
 
-		throw new InvalidArgumentException('Unable to set value for \''.$this->getName().'\' property. Value is supposed to be \''.implode('\' or \'', $types).'\', but actually is \''.$this->getValueType($value).'\'.');
+		throw new InvalidValueException('Unable to set value of \''.$this->getName().'\' property. Value is supposed to be \''.implode('\' or \'', $types).'\', but actually is \''.$this->getValueType($value).'\'.');
 	}
 
 	public function unsetValue()

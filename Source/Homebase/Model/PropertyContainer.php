@@ -2,8 +2,7 @@
 
 namespace Homebase\Model;
 
-use InvalidArgumentException;
-use LogicException;
+use Homebase\Model\Property\InvalidValueException;
 use ReflectionClass;
 
 /**
@@ -77,11 +76,11 @@ abstract class PropertyContainer
 				}
 			}
 
-			try {
+			if (!isset($propertyQualities['name'])) {
+				trigger_error('Unable to create Property. Property name was not provided. Parsed line was \''.$classPropertyQualities[0][$index].'\'', E_USER_ERROR);
+			} else {
 				$property = $this->createProperty($propertyQualities);
 				$this->addProperty($property);
-			} catch (LogicException $exception) {
-				trigger_error($exception->getMessage().' Parsed line was \''.$classPropertyQualities[0][$index].'\'', E_USER_ERROR);
 			}
 
 			$index++;
@@ -110,14 +109,9 @@ abstract class PropertyContainer
 	/**
 	 * @param array $propertyQualities array(string<qualityName> => string<qualityValue>) matches of annotation parsing
 	 * @return Property
-	 * @throws LogicException if name key is missing
 	 */
 	protected function createProperty(array $propertyQualities)
 	{
-		if (!isset($propertyQualities['name'])) {
-			throw new LogicException('Unable to create Property. Property name was not parsed.');
-		}
-
 		return StronglyTypedProperty::createProperty(
 			$propertyQualities['name'],
 			isset($propertyQualities['access']) ? $propertyQualities['access'] :null,
@@ -130,6 +124,7 @@ abstract class PropertyContainer
 	 * Property access is ignored
 	 * @param string $name
 	 * @param mixed $value
+	 * @throws Homebase\Model\Property\InvalidValueException if value can not be set
 	 */
 	protected function setPropertyValue($name, $value)
 	{
@@ -206,7 +201,7 @@ abstract class PropertyContainer
 
 		try {
 			$this->setPropertyValue($name, $value);
-		} catch (InvalidArgumentException $exception) {
+		} catch (InvalidValueException $exception) {
 			trigger_error($exception->getMessage(), E_USER_ERROR);
 		}
 	}
