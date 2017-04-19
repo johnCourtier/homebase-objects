@@ -28,9 +28,23 @@ require substr(__DIR__, 0, strpos(__DIR__, 'Tests')+5) . '/../vendor/autoload.ph
  * @property DateTime[] $dateTimes
  * @property date $myDate
  * @property Foo\Bar $fooBar
+ * @property DateTime $lazy
  */
 class NewPropertyContainer extends PropertyContainer
 {
+	protected function createProperty(array $propertyQualities)
+	{
+		if ($propertyQualities['name'] === 'lazy') {
+			return Homebase\Model\LazyProperty::createProperty(
+				$propertyQualities['name'],
+				isset($propertyQualities['access']) ? $propertyQualities['access'] :null,
+				isset($propertyQualities['type']) ? $propertyQualities['type'] :null,
+				isset($propertyQualities['description']) ? $propertyQualities['description'] :null
+			);
+		}
+
+		return parent::createProperty($propertyQualities);
+	}
 }
 
 /**
@@ -230,6 +244,25 @@ class PropertyContainerTest extends TestCase
 		Assert::error(function() {
 			$this->propertyContainer->myDate = 'voodoo';
 		}, 'E_USER_ERROR', 'Unable to set value of \'myDate\' property. Value is supposed to be \'date\', but actually is \'string\'.');
+	}
+
+	/**
+	 * @testCase
+	 */
+	public function testLazyProperty()
+	{
+		$callback = new Homebase\Model\Callback(function($offset) {
+			$date = new DateTime('1988-06-12 12:01:01');
+			$date->modify($offset);
+			return $date;
+		}, array('+1day'));
+		$this->propertyContainer->lazy = $callback;
+		Assert::same('1988-06-13 12:01:01', $this->propertyContainer->lazy->format('Y-m-d H:i:s'));
+		Assert::error(function() use($callback) {
+			$this->propertyContainer->lazy = $callback;
+		}, 'E_USER_ERROR', 'Unable to set value of \'lazy\' property. Value is supposed to be \'DateTime\', but actually is \'Homebase\Model\Callback\'.');
+		$this->propertyContainer->lazy = new DateTime('1988-06-12 12:02:02');
+		Assert::same('1988-06-12 12:02:02', $this->propertyContainer->lazy->format('Y-m-d H:i:s'));
 	}
 }
 

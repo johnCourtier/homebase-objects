@@ -97,7 +97,7 @@ class StronglyTypedProperty implements Property
 	/**
 	 * @param string|string[]|null $types
 	 */
-	public function setTypes($types)
+	protected function setTypes($types)
 	{
 		if (is_string($types)) {
 			$this->types = explode('|', $types);
@@ -109,7 +109,7 @@ class StronglyTypedProperty implements Property
 	/**
 	 * @param string $name
 	 */
-	public function setName($name)
+	protected function setName($name)
 	{
 		if (empty($name)) {
 			trigger_error('Unable to set empty property name.', E_USER_ERROR);
@@ -120,7 +120,7 @@ class StronglyTypedProperty implements Property
 	/**
 	 * @param string|null $description
 	 */
-	public function setDescription($description)
+	protected function setDescription($description)
 	{
 		$this->description = $description;
 	}

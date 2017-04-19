@@ -23,7 +23,7 @@ class LazyProperty extends StronglyTypedProperty
 			}
 			$this->callback = NULL;
 		}
-		parent::getValue();
+		return parent::getValue();
 	}
 
 	/**

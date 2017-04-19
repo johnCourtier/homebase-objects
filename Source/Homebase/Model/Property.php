@@ -25,21 +25,6 @@ interface Property
 	public function getValue();
 
 	/**
-	 * @param string[]|null $types valid types for value
-	 */
-	public function setTypes($types);
-
-	/**
-	 * @param string $name
-	 */
-	public function setName($name);
-
-	/**
-	 * @param string $description
-	 */
-	public function setDescription($description);
-
-	/**
 	 * @param mixed $value
 	 * @return string actual type of $value
 	 */
