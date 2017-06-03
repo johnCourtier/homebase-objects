@@ -168,7 +168,37 @@ abstract class PropertyContainer
 	 * @param string $name
 	 * @return bool
 	 */
-	protected function propertyExists($name)
+	public function isPropertyReadable($name)
+	{
+		if (!$this->propertyExists($name)) {
+			trigger_error('Unable to get property access of \''.$name.'\'. No such property is defined in \''.get_class($this).'\'. Use \''.get_class($this).'::propertyExists\' method to avoid this error.', E_USER_ERROR);
+			return;
+		}
+
+		$property = $this->properties[$name];
+		return $property->isReadable();
+	}
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	public function isPropertyWriteable($name)
+	{
+		if (!$this->propertyExists($name)) {
+			trigger_error('Unable to get property access of \''.$name.'\'. No such property is defined in \''.get_class($this).'\'. Use \''.get_class($this).'::propertyExists\' method to avoid this error.', E_USER_ERROR);
+			return;
+		}
+
+		$property = $this->properties[$name];
+		return $property->isWriteable();
+	}
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	public function propertyExists($name)
 	{
 		if ($this->properties === null) {
 			$this->setupProperties();
@@ -184,13 +214,13 @@ abstract class PropertyContainer
 	public function __set($name, $value)
 	{
 		if (!$this->propertyExists($name)) {
-			trigger_error('Unable to set property \''.$name.'\'. No such property is defined in \''.get_class($this).'\'.', E_USER_ERROR);
+			trigger_error('Unable to set property \''.$name.'\'. No such property is defined in \''.get_class($this).'\'. Use \''.get_class($this).'::propertyExists\' method to avoid this error.', E_USER_ERROR);
 			return;
 		}
 
 		$property = $this->properties[$name];
 		if (!$property->isWriteable()) {
-			trigger_error('Unable to set property \''.$name.'\'. Property of \''.get_class($this).'\' is not writeable.', E_USER_ERROR);
+			trigger_error('Unable to set property \''.$name.'\'. Property of \''.get_class($this).'\' is not writeable. Use \''.get_class($this).'::isPropertyWriteable\' method to avoid this error.', E_USER_ERROR);
 			return;
 		}
 
@@ -213,13 +243,13 @@ abstract class PropertyContainer
 	public function __get($name)
 	{
 		if (!$this->propertyExists($name)) {
-			trigger_error('Unable to get property \''.$name.'\'. No such property is defined in \''.get_class($this).'\'.', E_USER_ERROR);
+			trigger_error('Unable to get property \''.$name.'\'. No such property is defined in \''.get_class($this).'\'. Use \''.get_class($this).'::propertyExists\' method to avoid this error.', E_USER_ERROR);
 			return NULL;
 		}
 
 		$property = $this->properties[$name];
 		if (!$property->isReadable()) {
-			trigger_error('Unable to get property \''.$name.'\'. Property of \''.get_class($this).'\' is not readable.', E_USER_ERROR);
+			trigger_error('Unable to get property \''.$name.'\'. Property of \''.get_class($this).'\' is not readable. Use \''.get_class($this).'::isPropertyReadable\' method to avoid this error.', E_USER_ERROR);
 			return NULL;
 		}
 
@@ -243,7 +273,7 @@ abstract class PropertyContainer
 	public function __isset($name)
 	{
 		if (!$this->propertyExists($name)) {
-			trigger_error('Class \''.get_class($this).'\' has no \''.$name.'\' property defined.', E_USER_WARNING);
+			trigger_error('Class \''.get_class($this).'\' has no \''.$name.'\' property defined. Use \''.get_class($this).'::propertyExists\' method to avoid this warning.', E_USER_WARNING);
 			return FALSE;
 		}
 
@@ -257,13 +287,13 @@ abstract class PropertyContainer
 	public function __unset($name)
 	{
 		if (!$this->propertyExists($name)) {
-			trigger_error('Class \''.get_class($this).'\' has no \''.$name.'\' property defined.', E_USER_WARNING);
+			trigger_error('Class \''.get_class($this).'\' has no \''.$name.'\' property defined. Use \''.get_class($this).'::propertyExists\' method to avoid this error.', E_USER_WARNING);
 			return;
 		}
 
 		$property = $this->properties[$name];
 		if (!$property->isWriteable()) {
-			trigger_error('Unable to unset property \''.$name.'\'. Property of \''.get_class($this).'\' is not writeable.', E_USER_ERROR);
+			trigger_error('Unable to unset property \''.$name.'\'. Property of \''.get_class($this).'\' is not writeable. Use \''.get_class($this).'::isPropertyWriteable\' method to avoid this error.', E_USER_ERROR);
 			return;
 		}
 

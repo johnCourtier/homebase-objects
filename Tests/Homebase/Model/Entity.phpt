@@ -32,7 +32,7 @@ class EntityTest extends TestCase
 	{
 		Assert::error(function() {
 			return $this->entity->isPropertyChanged('nonProperty');
-		}, 'E_USER_WARNING', 'Class \''.get_class($this->entity).'\' has no \'nonProperty\' property defined.');
+		}, 'E_USER_WARNING', 'Class \''.get_class($this->entity).'\' has no \'nonProperty\' property defined. Use \''.get_class($this->entity).'::propertyExists\' method to avoid this warning.');
 		Assert::same(false, $this->entity->isPropertyChanged('property'));
 		$this->entity->property = '666';
 		Assert::same(false, $this->entity->isPropertyChanged('property'));

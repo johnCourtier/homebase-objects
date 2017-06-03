@@ -75,10 +75,10 @@ class PropertyContainerTest extends TestCase
 		$this->propertyContainer->stringProperty = 'voodoo';
 		Assert::error(function() {
 			return $this->propertyContainer->nonProperty;
-		}, 'E_USER_ERROR', 'Unable to get property \'nonProperty\'. No such property is defined in \''.get_class($this->propertyContainer).'\'.');
+		}, 'E_USER_ERROR', 'Unable to get property \'nonProperty\'. No such property is defined in \''.get_class($this->propertyContainer).'\'. Use \''.get_class($this->propertyContainer).'::propertyExists\' method to avoid this error.');
 		Assert::error(function() {
 			return isset($this->propertyContainer->nonProperty);
-		}, 'E_USER_WARNING', 'Class \''.get_class($this->propertyContainer).'\' has no \'nonProperty\' property defined.');
+		}, 'E_USER_WARNING', 'Class \''.get_class($this->propertyContainer).'\' has no \'nonProperty\' property defined. Use \''.get_class($this->propertyContainer).'::propertyExists\' method to avoid this warning.');
 	}
 
 	/**
@@ -86,9 +86,11 @@ class PropertyContainerTest extends TestCase
 	 */
 	public function testPropertyAccessWriteOnly()
 	{
+		Assert::same(TRUE, $this->propertyContainer->isPropertyWriteable('stringPropertyWrite'));
+		Assert::same(FALSE, $this->propertyContainer->isPropertyReadable('stringPropertyWrite'));
 		Assert::error(function() {
 			return $this->propertyContainer->stringPropertyWrite;
-		}, 'E_USER_ERROR', 'Unable to get property \'stringPropertyWrite\'. Property of \''.get_class($this->propertyContainer).'\' is not readable.');
+		}, 'E_USER_ERROR', 'Unable to get property \'stringPropertyWrite\'. Property of \''.get_class($this->propertyContainer).'\' is not readable. Use \''.get_class($this->propertyContainer).'::isPropertyReadable\' method to avoid this error.');
 		$this->propertyContainer->stringPropertyWrite = 'voodoo';
 	}
 
@@ -97,12 +99,14 @@ class PropertyContainerTest extends TestCase
 	 */
 	public function testPropertyAccessReadOnly()
 	{
+		Assert::same(FALSE, $this->propertyContainer->isPropertyWriteable('stringPropertyRead'));
+		Assert::same(TRUE, $this->propertyContainer->isPropertyReadable('stringPropertyRead'));
 		Assert::error(function() {
 			return $this->propertyContainer->stringPropertyRead;
 		}, 'E_USER_ERROR', 'Unable to get property \'stringPropertyRead\'. Property of \''.get_class($this->propertyContainer).'\' was not yet set.');
 		Assert::error(function() {
 			$this->propertyContainer->stringPropertyRead = 'voodoo';
-		}, 'E_USER_ERROR', 'Unable to set property \'stringPropertyRead\'. Property of \''.get_class($this->propertyContainer).'\' is not writeable.');
+		}, 'E_USER_ERROR', 'Unable to set property \'stringPropertyRead\'. Property of \''.get_class($this->propertyContainer).'\' is not writeable. Use \''.get_class($this->propertyContainer).'::isPropertyWriteable\' method to avoid this error.');
 	}
 
 	/**
@@ -110,6 +114,8 @@ class PropertyContainerTest extends TestCase
 	 */
 	public function testPropertyCombinedAccess()
 	{
+		Assert::same(TRUE, $this->propertyContainer->isPropertyWriteable('stringProperty'));
+		Assert::same(TRUE, $this->propertyContainer->isPropertyReadable('stringProperty'));
 		Assert::error(function() {
 			return $this->propertyContainer->stringProperty;
 		}, 'E_USER_ERROR', 'Unable to get property \'stringProperty\'. Property of \''.get_class($this->propertyContainer).'\' was not yet set.');

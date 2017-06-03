@@ -146,9 +146,9 @@ class StronglyTypedProperty implements Property
 	{
 		$types = $this->getTypes();
 
-		if ($types === null) {
+		if ($types === NULL) {
 			$this->value = $value;
-			$this->isValueSet = true;
+			$this->isValueSet = TRUE;
 			return;
 		}
 
@@ -159,7 +159,7 @@ class StronglyTypedProperty implements Property
 				|| $this->isTypeAndValueObjectArray($type, $value)
 			) {
 				$this->value = $value;
-				$this->isValueSet = true;
+				$this->isValueSet = TRUE;
 				return;
 			}
 		}
@@ -169,8 +169,8 @@ class StronglyTypedProperty implements Property
 
 	public function unsetValue()
 	{
-		$this->value = null;
-		$this->isValueSet = false;
+		$this->value = NULL;
+		$this->isValueSet = FALSE;
 	}
 
 	/**
@@ -316,7 +316,7 @@ class StronglyTypedProperty implements Property
 	 */
 	public function isWriteable()
 	{
-		return $this->access & static::ACCESS_WRITE;
+		return (bool) $this->access & static::ACCESS_WRITE;
 	}
 
 	/**
@@ -324,7 +324,7 @@ class StronglyTypedProperty implements Property
 	 */
 	public function isReadable()
 	{
-		return $this->access & static::ACCESS_READ;
+		return (bool) $this->access & static::ACCESS_READ;
 	}
 
 	/**
