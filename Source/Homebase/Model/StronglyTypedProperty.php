@@ -316,7 +316,7 @@ class StronglyTypedProperty implements Property
 	 */
 	public function isWriteable()
 	{
-		return (bool) $this->access & static::ACCESS_WRITE;
+		return (bool) ($this->access & static::ACCESS_WRITE);
 	}
 
 	/**
@@ -324,7 +324,7 @@ class StronglyTypedProperty implements Property
 	 */
 	public function isReadable()
 	{
-		return (bool) $this->access & static::ACCESS_READ;
+		return (bool) ($this->access & static::ACCESS_READ);
 	}
 
 	/**
