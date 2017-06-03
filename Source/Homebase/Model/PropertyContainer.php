@@ -158,9 +158,13 @@ abstract class PropertyContainer
 		return $this->properties[$name]->getValue();
 	}
 
-	/** @var Property[]|null */
+	/** @var Property[] */
 	protected function getProperties()
 	{
+		if ($this->properties === null) {
+			$this->setupProperties();
+		}
+
 		return $this->properties;
 	}
 
