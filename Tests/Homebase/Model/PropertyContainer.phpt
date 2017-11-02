@@ -90,7 +90,7 @@ class PropertyContainerTest extends TestCase
 		Assert::same(FALSE, $this->propertyContainer->isPropertyReadable('stringPropertyWrite'));
 		Assert::error(function() {
 			return $this->propertyContainer->stringPropertyWrite;
-		}, 'E_USER_ERROR', 'Unable to get property \'stringPropertyWrite\'. Property of \''.get_class($this->propertyContainer).'\' is not readable. Use \''.get_class($this->propertyContainer).'::isPropertyReadable\' method to avoid this error.');
+		}, 'E_USER_ERROR', 'Unable to get property \'stringPropertyWrite\'. No such property is readable in \''.get_class($this->propertyContainer).'\' class. Use \''.get_class($this->propertyContainer).'::isPropertyReadable\' method to avoid this error.');
 		$this->propertyContainer->stringPropertyWrite = 'voodoo';
 	}
 
@@ -103,10 +103,10 @@ class PropertyContainerTest extends TestCase
 		Assert::same(TRUE, $this->propertyContainer->isPropertyReadable('stringPropertyRead'));
 		Assert::error(function() {
 			return $this->propertyContainer->stringPropertyRead;
-		}, 'E_USER_ERROR', 'Unable to get property \'stringPropertyRead\'. Property of \''.get_class($this->propertyContainer).'\' was not yet set.');
+		}, 'E_USER_ERROR', 'Unable to get property \'stringPropertyRead\'. No such property was yet set in \''.get_class($this->propertyContainer).'\' class.');
 		Assert::error(function() {
 			$this->propertyContainer->stringPropertyRead = 'voodoo';
-		}, 'E_USER_ERROR', 'Unable to set property \'stringPropertyRead\'. Property of \''.get_class($this->propertyContainer).'\' is not writeable. Use \''.get_class($this->propertyContainer).'::isPropertyWriteable\' method to avoid this error.');
+		}, 'E_USER_ERROR', 'Unable to set property \'stringPropertyRead\'. No such property is writeable in \''.get_class($this->propertyContainer).'\' class. Use \''.get_class($this->propertyContainer).'::isPropertyWriteable\' method to avoid this error.');
 	}
 
 	/**
@@ -118,7 +118,7 @@ class PropertyContainerTest extends TestCase
 		Assert::same(TRUE, $this->propertyContainer->isPropertyReadable('stringProperty'));
 		Assert::error(function() {
 			return $this->propertyContainer->stringProperty;
-		}, 'E_USER_ERROR', 'Unable to get property \'stringProperty\'. Property of \''.get_class($this->propertyContainer).'\' was not yet set.');
+		}, 'E_USER_ERROR', 'Unable to get property \'stringProperty\'. No such property was yet set in \''.get_class($this->propertyContainer).'\' class.');
 		$this->propertyContainer->stringProperty = 'voodoo';
 		Assert::same('voodoo', $this->propertyContainer->stringProperty);
 	}

@@ -224,7 +224,7 @@ abstract class PropertyContainer
 
 		$property = $this->properties[$name];
 		if (!$property->isWriteable()) {
-			trigger_error('Unable to set property \''.$name.'\'. Property of \''.get_class($this).'\' is not writeable. Use \''.get_class($this).'::isPropertyWriteable\' method to avoid this error.', E_USER_ERROR);
+			trigger_error('Unable to set property \''.$name.'\'. No such property is writeable in \''.get_class($this).'\' class. Use \''.get_class($this).'::isPropertyWriteable\' method to avoid this error.', E_USER_ERROR);
 			return;
 		}
 
@@ -253,7 +253,7 @@ abstract class PropertyContainer
 
 		$property = $this->properties[$name];
 		if (!$property->isReadable()) {
-			trigger_error('Unable to get property \''.$name.'\'. Property of \''.get_class($this).'\' is not readable. Use \''.get_class($this).'::isPropertyReadable\' method to avoid this error.', E_USER_ERROR);
+			trigger_error('Unable to get property \''.$name.'\'. No such property is readable in \''.get_class($this).'\' class. Use \''.get_class($this).'::isPropertyReadable\' method to avoid this error.', E_USER_ERROR);
 			return NULL;
 		}
 
@@ -266,7 +266,7 @@ abstract class PropertyContainer
 			return $property->getValue();
 		}
 
-		trigger_error('Unable to get property \''.$name.'\'. Property of \''.get_class($this).'\' was not yet set.', E_USER_ERROR);
+		trigger_error('Unable to get property \''.$name.'\'. No such property was yet set in \''.get_class($this).'\' class.', E_USER_ERROR);
 		return NULL;
 	}
 
@@ -297,7 +297,7 @@ abstract class PropertyContainer
 
 		$property = $this->properties[$name];
 		if (!$property->isWriteable()) {
-			trigger_error('Unable to unset property \''.$name.'\'. Property of \''.get_class($this).'\' is not writeable. Use \''.get_class($this).'::isPropertyWriteable\' method to avoid this error.', E_USER_ERROR);
+			trigger_error('Unable to unset property \''.$name.'\'. No such property is writeable in \''.get_class($this).'\' class. Use \''.get_class($this).'::isPropertyWriteable\' method to avoid this error.', E_USER_ERROR);
 			return;
 		}
 
