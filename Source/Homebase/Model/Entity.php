@@ -62,7 +62,7 @@ abstract class Entity extends PropertyContainer implements Mutable
 		parent::setPropertyValue($name, $value);
 
 		if ($isOriginalValue) {
-			$this->setOriginalValue($name, $this->getPropertyValue($name));
+			$this->setOriginalValue($name, $value);
 		}
 	}
 }
