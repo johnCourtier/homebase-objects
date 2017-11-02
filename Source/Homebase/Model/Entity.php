@@ -8,6 +8,30 @@ abstract class Entity extends PropertyContainer implements Mutable
 	protected $originalValues;
 
 	/**
+	 * @param string $name
+	 * @param mixed $value
+	 */
+	public function __set($name, $value)
+	{
+		$isOriginalValue = !$this->isOriginalValueSet($name);
+
+		parent::__set($name, $value);
+
+		if ($isOriginalValue) {
+			$this->setOriginalValue($name, $this->getPropertyValue($name));
+		}
+	}
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	protected function isOriginalValueSet($name)
+	{
+		return isset($this->originalValues[$name]);
+	}
+
+	/**
 	 * @param string $propertyName
 	 * @return bool
 	 */
@@ -23,14 +47,22 @@ abstract class Entity extends PropertyContainer implements Mutable
 	 * @param string $name
 	 * @param mixed $value
 	 */
-	public function __set($name, $value)
+	protected function setOriginalValue($name, $value)
 	{
-		$isOriginalValue = !isset($this->originalValues[$name]);
+		$this->originalValues[$name] = $value;
+	}
 
-		parent::__set($name, $value);
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function setPropertyValue($name, $value)
+	{
+		$isOriginalValue = !$this->isOriginalValueSet($name);
+
+		parent::setPropertyValue($name, $value);
 
 		if ($isOriginalValue) {
-			$this->originalValues[$name] = $this->getPropertyValue($name);
+			$this->setOriginalValue($name, $this->getPropertyValue($name));
 		}
 	}
 }
